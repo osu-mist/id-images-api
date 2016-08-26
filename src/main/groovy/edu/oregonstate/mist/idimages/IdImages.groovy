@@ -1,4 +1,4 @@
-package edu.oregonstate.mist.webapiskeleton
+package edu.oregonstate.mist.idimages
 
 import edu.oregonstate.mist.api.BuildInfoManager
 import edu.oregonstate.mist.api.Configuration
@@ -6,16 +6,19 @@ import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.api.InfoResource
 import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.BasicAuthenticator
+import edu.oregonstate.mist.idimages.resources.IdImagesResource
+import io.dropwizard.auth.AuthFactory
+import io.dropwizard.auth.basic.BasicAuthFactory
 import io.dropwizard.Application
 import io.dropwizard.setup.Bootstrap
 import io.dropwizard.setup.Environment
-import io.dropwizard.auth.AuthFactory
-import io.dropwizard.auth.basic.BasicAuthFactory
+import org.skife.jdbi.v2.DBI
+import io.dropwizard.jdbi.DBIFactory
 
 /**
  * Main application class.
  */
-class SkeletonApplication extends Application<Configuration> {
+class IdImages extends Application<IdImagesConfiguration> {
     /**
      * Initializes application bootstrap.
      *
@@ -31,7 +34,7 @@ class SkeletonApplication extends Application<Configuration> {
      * @param environment
      */
     @Override
-    public void run(Configuration configuration, Environment environment) {
+    public void run(IdImagesConfiguration configuration, Environment environment) {
         Resource.loadProperties()
 
         BuildInfoManager buildInfoManager = new BuildInfoManager()
@@ -42,8 +45,13 @@ class SkeletonApplication extends Application<Configuration> {
                 AuthFactory.binder(
                         new BasicAuthFactory<AuthenticatedUser>(
                                 new BasicAuthenticator(configuration.getCredentialsList()),
-                                'SkeletonApplication',
+                                'IdImages',
                                 AuthenticatedUser.class)))
+
+        DBIFactory factory = new DBIFactory()
+        DBI jdbi = factory.build(environment, configuration.getDataSourceFactory(), "jdbi")
+        IDImageDAO idImageDAO = jdbi.onDemand(IDImageDAO.class)
+        environment.jersey().register(new IdImagesResource(idImageDAO))
     }
 
     /**
@@ -53,6 +61,6 @@ class SkeletonApplication extends Application<Configuration> {
      * @throws Exception
      */
     public static void main(String[] arguments) throws Exception {
-        new SkeletonApplication().run(arguments)
+        new IdImages().run(arguments)
     }
 }
