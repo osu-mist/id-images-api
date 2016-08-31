@@ -1,7 +1,10 @@
 package edu.oregonstate.mist.idimages.resources
 
+import com.codahale.metrics.annotation.Timed
+import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.idimages.IDImageDAO
+import io.dropwizard.auth.Auth
 import io.dropwizard.jersey.params.IntParam
 import javax.imageio.ImageIO
 import javax.ws.rs.PathParam
@@ -31,11 +34,12 @@ class IdImagesResource extends Resource {
     @GET
     @Path ('{id: \\d+}')
     @Produces("image/jpg")
-    public Response getByOSUID(@PathParam('id') IntParam id) {
+    @Timed
+    public Response getByOSUID(@Auth AuthenticatedUser _, @PathParam('id') IntParam id) {
         Blob image = idImageDAO.getByID(id.get())
 
         if (!image) {
-            return(notFound().type(MediaType.APPLICATION_JSON).build())
+            return notFound().type(MediaType.APPLICATION_JSON).build()
         }
         try {
             BufferedImage buffImg = ImageIO.read(image.getBinaryStream())
@@ -45,8 +49,8 @@ class IdImagesResource extends Resource {
             Response.ok(imageData).build()
         } catch (Exception e) {
             logger.error("Exception while calling getIDImages", e)
-            return(internalServerError("Internal server error").
-                    type(MediaType.APPLICATION_JSON).build())
+            return internalServerError("Internal server error").
+                    type(MediaType.APPLICATION_JSON).build()
         }
     }
 }
