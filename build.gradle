@@ -28,9 +28,9 @@ buildscript {
 // https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#N10621
 repositories {
     mavenCentral()
-    // flatDir {
-    //     dirs 'bin'
-    // }
+     flatDir {
+         dirs 'bin'
+     }
 }
 
 // https://docs.gradle.org/current/userguide/artifact_dependencies_tutorial.html#N105E1
@@ -43,8 +43,8 @@ dependencies {
     compile "io.dropwizard:dropwizard-core:${dropwizardVersion}"
     compile "io.dropwizard:dropwizard-auth:${dropwizardVersion}"
     compile "io.dropwizard:dropwizard-client:${dropwizardVersion}"
-    // compile "io.dropwizard:dropwizard-jdbi:${dropwizardVersion}"
-    // compile ':ojdbc6_g:'
+    compile "io.dropwizard:dropwizard-jdbi:${dropwizardVersion}"
+    compile ':ojdbc6_g:'
 }
 
 codenarc {
@@ -75,6 +75,12 @@ shadowJar {
     mergeServiceFiles()
 }
 
+// downloads files stored in contrib repository
+task cloneContribFiles(type: Exec) {
+    commandLine './cloneContribFiles.sh', "${contribRepo}${archivesBaseName}-contrib.git"
+}
+compileGroovy.dependsOn cloneContribFiles
+
 // write build properties to file
 task writeBuildProperties << {
     Properties properties = new Properties()
@@ -89,7 +95,7 @@ task writeBuildProperties << {
 processResources.dependsOn writeBuildProperties
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Groovydoc.html
-build.dependsOn shadowJar, groovydoc
+build.dependsOn shadowJar, groovydoc, cloneContribFiles
 
 // FIXME: use ShadowJar (java -jar build/libs/web-api-skeleton-all.jar server configuration.yaml)
 task run(type: JavaExec, dependsOn: build) {
