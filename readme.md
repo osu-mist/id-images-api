@@ -17,9 +17,9 @@ Returns the ID image of a person in the media type image/jpg. Errors are returne
 
 ## Docker
 
-To build a Docker image using the included Dockerfile, use Gradle build:
+To build a Docker image using the included Dockerfile, use Gradle:
 
-    $ gradle build
+    $ gradle buildDockerImage
 
 Run the Docker Image on localhost
 

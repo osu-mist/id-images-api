@@ -85,7 +85,6 @@ compileGroovy.dependsOn cloneContribFiles
 task buildDockerImage(type: Exec) {
     commandLine './buildDockerImage.sh', "${archivesBaseName}"
 }
-buildDockerImage.dependsOn shadowJar
 
 // write build properties to file
 task writeBuildProperties << {
@@ -101,7 +100,7 @@ task writeBuildProperties << {
 processResources.dependsOn writeBuildProperties
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Groovydoc.html
-build.dependsOn shadowJar, groovydoc, cloneContribFiles, buildDockerImage
+build.dependsOn shadowJar, groovydoc, cloneContribFiles
 
 // FIXME: use ShadowJar (java -jar build/libs/web-api-skeleton-all.jar server configuration.yaml)
 task run(type: JavaExec, dependsOn: build) {
