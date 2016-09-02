@@ -14,3 +14,19 @@ The Web API definition is contained in the [Swagger specification](swagger.yaml)
 
 ### GET idimages/{osuid}
 Returns the ID image of a person in the media type image/jpg. Errors are returned in application/json format.
+
+## Docker
+
+To build a Docker image using the included Dockerfile, use Gradle build:
+
+    $ gradle build
+
+Run the Docker Image on localhost
+
+    $ docker run \
+    > -p 8080:8080 \
+    > -p 8081:8081 \
+    > -v /path/to/configuration.yaml:/configuration.yaml \
+    > -v /path/to/truststore.truststore:/truststore.truststore \
+    > -v /path/to/keystore.keystore:/keystore.keystore \
+    > id-images-api
