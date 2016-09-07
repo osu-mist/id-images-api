@@ -85,6 +85,7 @@ compileGroovy.dependsOn cloneContribFiles
 task buildDockerImage(type: Exec) {
     commandLine './buildDockerImage.sh', "${archivesBaseName}"
 }
+buildDockerImage.dependsOn build
 
 // write build properties to file
 task writeBuildProperties << {
