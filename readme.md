@@ -26,7 +26,7 @@ Run the Docker Image on localhost
     $ docker run \
     > -p 8080:8080 \
     > -p 8081:8081 \
-    > -v /path/to/configuration.yaml:/configuration.yaml \
-    > -v /path/to/truststore.truststore:/truststore.truststore \
-    > -v /path/to/keystore.keystore:/keystore.keystore \
+    > -v /path/to/configuration.yaml:/configuration.yaml:ro \
+    > -v /path/to/truststore.truststore:/truststore.truststore:ro \
+    > -v /path/to/keystore.keystore:/keystore.keystore:ro \
     > id-images-api
