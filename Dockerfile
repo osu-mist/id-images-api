@@ -2,7 +2,7 @@ FROM openjdk:7
 
 ADD build/libs/latest.jar latest.jar
 
-CMD java -jar latest.jar server configuration.yaml
+CMD ["java", "-jar", "latest.jar", "server", "configuration.yaml"]
 
 USER nobody:nogroup
 
