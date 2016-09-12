@@ -29,4 +29,5 @@ Run the Docker Image on localhost
     > -v /path/to/configuration.yaml:/configuration.yaml:ro \
     > -v /path/to/truststore.truststore:/truststore.truststore:ro \
     > -v /path/to/keystore.keystore:/keystore.keystore:ro \
+    > -v /path/to/logs:/logs \
     > id-images-api
