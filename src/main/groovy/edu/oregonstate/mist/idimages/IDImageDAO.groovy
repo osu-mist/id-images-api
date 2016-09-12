@@ -9,7 +9,7 @@ import edu.oregonstate.mist.contrib.AbstractIdImageDao
 @RegisterMapper(ImageMapper)
 public interface IDImageDAO extends Closeable {
     @SqlQuery(AbstractIdImageDao.getByID)
-    Blob getByID(@Bind("id") Integer id)
+    Blob getByID(@Bind("id") String id)
 
     @Override
     void close()
