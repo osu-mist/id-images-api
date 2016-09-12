@@ -35,8 +35,8 @@ class IdImagesResource extends Resource {
     @Path ('{id: \\d+}')
     @Produces("image/jpg")
     @Timed
-    public Response getByOSUID(@Auth AuthenticatedUser _, @PathParam('id') IntParam id) {
-        Blob image = idImageDAO.getByID((id.get()).toString())
+    public Response getByOSUID(@Auth AuthenticatedUser _, @PathParam('id') String id) {
+        Blob image = idImageDAO.getByID(id)
 
         if (!image) {
             return notFound().type(MediaType.APPLICATION_JSON).build()
