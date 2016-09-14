@@ -5,7 +5,6 @@ import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.idimages.IDImageDAO
 import io.dropwizard.auth.Auth
-import io.dropwizard.jersey.params.IntParam
 import javax.imageio.ImageIO
 import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
