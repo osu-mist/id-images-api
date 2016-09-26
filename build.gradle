@@ -75,11 +75,17 @@ shadowJar {
     mergeServiceFiles()
 }
 
-// downloads files stored in contrib repository
+// downloads files stored in contrib repository if getContribFiles is yes
 task cloneContribFiles(type: Exec) {
-    commandLine './cloneContribFiles.sh', "${contribRepo}${archivesBaseName}-contrib.git"
+    commandLine './cloneContribFiles.sh', "${contribRepo}${archivesBaseName}-contrib.git", "${getContribFiles}"
 }
 compileGroovy.dependsOn cloneContribFiles
+
+//build docker image from latest fat jar
+task buildDockerImage(type: Exec) {
+    commandLine './buildDockerImage.sh', "${archivesBaseName}", "build/libs/${shadowJar.archiveName}"
+}
+buildDockerImage.dependsOn build
 
 // write build properties to file
 task writeBuildProperties << {
@@ -95,7 +101,7 @@ task writeBuildProperties << {
 processResources.dependsOn writeBuildProperties
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Groovydoc.html
-build.dependsOn shadowJar, groovydoc, cloneContribFiles
+build.dependsOn shadowJar, groovydoc
 
 // FIXME: use ShadowJar (java -jar build/libs/web-api-skeleton-all.jar server configuration.yaml)
 task run(type: JavaExec, dependsOn: build) {
