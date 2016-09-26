@@ -1,13 +1,10 @@
 package edu.oregonstate.mist.idimages.resources
 
 import com.codahale.metrics.annotation.Timed
-import com.sun.corba.se.spi.orbutil.fsm.Input
 import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.idimages.IDImageDAO
 import io.dropwizard.auth.Auth
-import org.yaml.snakeyaml.Yaml
-
 import javax.imageio.ImageIO
 import javax.ws.rs.PathParam
 import javax.ws.rs.core.Response
