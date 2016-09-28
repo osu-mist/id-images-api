@@ -20,6 +20,11 @@ paths:
           description: "The 9 digit OSU ID number of a person."
           required: true
           type: integer
+        - in: query
+          name: width
+          description: "Resizes image to a pixel value for width while keeping original aspect ratio."
+          required: false
+          type: integer
 
       responses:
         "200":
@@ -30,6 +35,10 @@ paths:
               Content-type:
                 type: string
                 description: image/jpeg
+        "400":
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
         "404":
           description: "Not Found"
           schema:
