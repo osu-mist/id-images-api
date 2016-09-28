@@ -8,6 +8,7 @@ import edu.oregonstate.mist.idimages.ImageManipulation
 import io.dropwizard.auth.Auth
 import javax.imageio.ImageIO
 import javax.ws.rs.PathParam
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Response
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -35,11 +36,17 @@ class IdImagesResource extends Resource {
     @Path ('{id: \\d+}')
     @Produces("image/jpg")
     @Timed
-    public Response getByOSUID(@Auth AuthenticatedUser _, @PathParam('id') String id) {
+    public Response getByOSUID(@Auth AuthenticatedUser _,
+                               @PathParam('id') String id,
+                               @QueryParam('w') Integer resizeWidth) {
         Integer bannerPIDM = idImageDAO.getPIDM(id)
 
         if (!bannerPIDM) {
             return notFound().type(MediaType.APPLICATION_JSON).build()
+        }
+        if ((resizeWidth != null) && resizeWidth <= 0) {
+            String invalidWidth = "Width must be greater than 0"
+            return badRequest(invalidWidth).type(MediaType.APPLICATION_JSON).build()
         }
         Blob imageData = idImageDAO.getByID(id)
 
@@ -47,12 +54,12 @@ class IdImagesResource extends Resource {
         if (!imageData) {
             File defaultImageFile = new File("images/defaultImage.jpg")
             BufferedImage defaultImage = ImageIO.read(defaultImageFile)
-            return ok(ImageManipulation.getImageStream(defaultImage)).build()
+            return ok(ImageManipulation.getImageStream(defaultImage, resizeWidth)).build()
         }
         //Return an ID image of a person
         try {
             BufferedImage idImage = ImageIO.read(imageData.getBinaryStream())
-            Response.ok(ImageManipulation.getImageStream(idImage)).build()
+            Response.ok(ImageManipulation.getImageStream(idImage, resizeWidth)).build()
         } catch (Exception e) {
             logger.error("Exception while calling getIDImages", e)
             return internalServerError("Internal server error").
