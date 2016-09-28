@@ -40,13 +40,17 @@ class IdImagesResource extends Resource {
                                @PathParam('id') String id,
                                @QueryParam('w') Integer resizeWidth) {
         Integer bannerPIDM = idImageDAO.getPIDM(id)
+        Integer maxWidth = 2000
 
         if (!bannerPIDM) {
             return notFound().type(MediaType.APPLICATION_JSON).build()
         }
         if ((resizeWidth != null) && resizeWidth <= 0) {
-            String invalidWidth = "Width must be greater than 0"
-            return badRequest(invalidWidth).type(MediaType.APPLICATION_JSON).build()
+            String smallWidth = "Width must be greater than 0"
+            return badRequest(smallWidth).type(MediaType.APPLICATION_JSON).build()
+        } else if (resizeWidth > maxWidth) {
+            String largeWidth = "Width must be value from 1-" + maxWidth + "."
+            return badRequest(largeWidth).type(MediaType.APPLICATION_JSON).build()
         }
         Blob imageData = idImageDAO.getByID(id)
 

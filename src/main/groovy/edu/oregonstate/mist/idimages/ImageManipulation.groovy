@@ -20,9 +20,8 @@ class ImageManipulation {
     }
 
     //Resizes a BufferedImage to a width constraint and calculates the height accordingly
-    private static BufferedImage resizeWidthConstraint(BufferedImage img, int resizeWidth) {
+    private static BufferedImage resizeWidthConstraint(BufferedImage img, Integer resizeWidth) {
         Integer newHeight = ((img.getHeight() * resizeWidth) / img.getWidth())
-
         Image tmp = img.getScaledInstance(resizeWidth, newHeight, Image.SCALE_SMOOTH)
         BufferedImage resizedImg = new BufferedImage(resizeWidth, newHeight, img.getType())
 
