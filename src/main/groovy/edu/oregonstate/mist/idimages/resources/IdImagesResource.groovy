@@ -26,6 +26,8 @@ class IdImagesResource extends Resource {
 
     private IDImageDAO idImageDAO
 
+    public static final Integer maxWidth = 2000
+
     IdImagesResource(IDImageDAO idImageDAO) {
         this.idImageDAO = idImageDAO
     }
@@ -40,7 +42,6 @@ class IdImagesResource extends Resource {
                                @PathParam('id') String id,
                                @QueryParam('w') Integer resizeWidth) {
         Integer bannerPIDM = idImageDAO.getPIDM(id)
-        Integer maxWidth = 2000
 
         if (!bannerPIDM) {
             return notFound().type(MediaType.APPLICATION_JSON).build()

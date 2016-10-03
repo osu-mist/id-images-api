@@ -14,9 +14,8 @@ class ImageManipulation {
         }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
         ImageIO.write(image, "jpg", outputStream)
-        byte[] imageData = outputStream.toByteArray()
 
-        imageData
+        outputStream.toByteArray()
     }
 
     //Resizes a BufferedImage to a width constraint and calculates the height accordingly
