@@ -4,9 +4,11 @@ import com.codahale.metrics.annotation.Timed
 import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.idimages.IDImageDAO
+import edu.oregonstate.mist.idimages.ImageManipulation
 import io.dropwizard.auth.Auth
 import javax.imageio.ImageIO
 import javax.ws.rs.PathParam
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Response
 import javax.ws.rs.GET
 import javax.ws.rs.Path
@@ -24,6 +26,8 @@ class IdImagesResource extends Resource {
 
     private IDImageDAO idImageDAO
 
+    public static final Integer maxWidth = 2000
+
     IdImagesResource(IDImageDAO idImageDAO) {
         this.idImageDAO = idImageDAO
     }
@@ -34,18 +38,33 @@ class IdImagesResource extends Resource {
     @Path ('{id: \\d+}')
     @Produces("image/jpg")
     @Timed
-    public Response getByOSUID(@Auth AuthenticatedUser _, @PathParam('id') String id) {
-        Blob image = idImageDAO.getByID(id)
+    public Response getByOSUID(@Auth AuthenticatedUser _,
+                               @PathParam('id') String id,
+                               @QueryParam('w') Integer resizeWidth) {
+        Integer bannerPIDM = idImageDAO.getPIDM(id)
 
-        if (!image) {
+        if (!bannerPIDM) {
             return notFound().type(MediaType.APPLICATION_JSON).build()
         }
+        if ((resizeWidth != null) && resizeWidth <= 0) {
+            String smallWidth = "Width must be greater than 0"
+            return badRequest(smallWidth).type(MediaType.APPLICATION_JSON).build()
+        } else if (resizeWidth > maxWidth) {
+            String largeWidth = "Width must be value from 1-" + maxWidth + "."
+            return badRequest(largeWidth).type(MediaType.APPLICATION_JSON).build()
+        }
+        Blob imageData = idImageDAO.getByID(id)
+
+        //Return a placeholder image if a person exists but doesn't have an ID image
+        if (!imageData) {
+            File defaultImageFile = new File("images/defaultImage.jpg")
+            BufferedImage defaultImage = ImageIO.read(defaultImageFile)
+            return ok(ImageManipulation.getImageStream(defaultImage, resizeWidth)).build()
+        }
+        //Return an ID image of a person
         try {
-            BufferedImage buffImg = ImageIO.read(image.getBinaryStream())
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream()
-            ImageIO.write(buffImg, "jpg", outputStream)
-            byte[] imageData = outputStream.toByteArray()
-            Response.ok(imageData).build()
+            BufferedImage idImage = ImageIO.read(imageData.getBinaryStream())
+            Response.ok(ImageManipulation.getImageStream(idImage, resizeWidth)).build()
         } catch (Exception e) {
             logger.error("Exception while calling getIDImages", e)
             return internalServerError("Internal server error").
