@@ -57,8 +57,9 @@ class IdImagesResource extends Resource {
 
         //Return a placeholder image if a person exists but doesn't have an ID image
         if (!imageData) {
-            File defaultImageFile = new File("images/defaultImage.jpg")
-            BufferedImage defaultImage = ImageIO.read(defaultImageFile)
+            ClassLoader classloader = Thread.currentThread().getContextClassLoader()
+            InputStream imageInputStream = classloader.getResourceAsStream("defaultImage.jpg")
+            BufferedImage defaultImage = ImageIO.read(imageInputStream)
             return ok(ImageManipulation.getImageStream(defaultImage, resizeWidth)).build()
         }
         //Return an ID image of a person
