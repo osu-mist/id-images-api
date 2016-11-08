@@ -14,4 +14,4 @@ Next, use these commands to build and run the container. All you need installed 
 
 Successfully passing all the tests with the command above would output this result:
 
-![success_test](images/successful.png)
+![success_test](images/success.png)
