@@ -8,9 +8,9 @@ Next, use these commands to build and run the container. All you need installed 
 
     docker build -t idimages-tests .
     # Run the integration tests in *nix
-    docker run -v "$PWD"/configuration.json:/usr/src/app/configuration.json idimages-tests
+    docker run -v "$PWD"/configuration.json:/usr/src/app/configuration.json:ro idimages-tests
     # Run the integration tests in Windows
-    docker run -v c:\path\to\configuration.json:/c:\usr\src\app\configuration.json idimages-tests
+    docker run -v c:\path\to\configuration.json:/c:\usr\src\app\configuration.json:ro idimages-tests
 
 Successfully passing all the tests with the command above would output this result:
 
