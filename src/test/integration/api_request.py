@@ -1,0 +1,12 @@
+import json, requests
+from PIL import Image
+from io import BytesIO
+
+def basic_request(url, access_token, verb="get"):
+    headers = {'Authorization': access_token}
+    request = requests.request(verb, url, headers=headers)
+    return request
+
+def get_image(url, access_token):
+    request = basic_request(url, access_token)
+    return Image.open(BytesIO(request.content))
