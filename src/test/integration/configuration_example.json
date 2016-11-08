@@ -1,0 +1,14 @@
+{
+    "hostname": "https://example.com/",
+    "version": "v1",
+
+    "api": "/idimages/",
+
+    "token_endpoint": "token",
+
+    "client_id": "secret",
+    "client_secret": "sauce",
+
+    "osu_id_no_image": "012345678",
+    "osu_id_with_image": "876543210"
+}
