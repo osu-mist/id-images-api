@@ -9,5 +9,6 @@
     "client_id": "secret",
     "client_secret": "sauce",
 
-    "osu_id_no_image": "012345678"
+    "osu_id_no_image": "012345678",
+    "osu_id_with_image": "876543210"
 }
