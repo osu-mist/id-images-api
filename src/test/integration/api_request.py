@@ -9,4 +9,10 @@ def basic_request(url, access_token, verb="get"):
 
 def get_image(url, access_token):
     request = basic_request(url, access_token)
-    return Image.open(BytesIO(request.content))
+    
+    try:
+        image = Image.open(BytesIO(request.content))
+    except IOError:
+        image = None
+
+    return (image, request.status_code)
