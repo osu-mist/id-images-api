@@ -24,23 +24,32 @@ class gateway_tests(unittest.TestCase):
         default_image_url = url + config_json["osu_id_no_image"]
 
         expected_image = Image.open("images/defaultImage.jpg")
-        response_image = get_image(default_image_url, access_token)
+        response_image, response_code = get_image(default_image_url, access_token)
         
-        h1 = expected_image.histogram()
-        h2 = response_image.histogram()
+        if (response_code != 200):
+            self.fail("Response code: " + str(response_code))
+        else:    
+            h1 = expected_image.histogram()
+            h2 = response_image.histogram()
 
-        rms = math.sqrt(reduce(operator.add,
-                           map(lambda a,b: (a-b)**2, h1, h2))/len(h1))
+            rms = math.sqrt(reduce(operator.add,
+                               map(lambda a,b: (a-b)**2, h1, h2))/len(h1))
 
-        self.assertLess(rms, 100)
+            self.assertLess(rms, 100)
 
     def test_image_resize(self):
-        original_image = get_image(request_url, access_token)
+        original_image, response_code = get_image(request_url, access_token)
+
+        if (response_code != 200):
+            self.fail("Response code: " + str(response_code))
 
         resize_width = 150
         resize_url = request_url + '?w=' + str(resize_width)
-        resized_image = get_image(resize_url, access_token)
+        resized_image, response_code = get_image(resize_url, access_token)
 
+        if (response_code != 200):
+            self.fail("Response code: " + str(response_code))
+            
         expected_height = ((original_image.height * resize_width) / original_image.width)
 
         self.assertEqual(expected_height, resized_image.height)
