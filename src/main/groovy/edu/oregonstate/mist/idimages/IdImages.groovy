@@ -46,7 +46,7 @@ class IdImages extends Application<IdImagesConfiguration> {
                 new BasicCredentialAuthFilter.Builder<AuthenticatedUser>()
                         .setAuthenticator(new BasicAuthenticator(
                             configuration.getCredentialsList()))
-                        .setRealm('SkeletonApplication')
+                        .setRealm('IdImages')
                         .buildAuthFilter()
         ))
         environment.jersey().register(new AuthValueFactoryProvider.Binder
