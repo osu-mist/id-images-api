@@ -25,7 +25,6 @@ paths:
           description: "Resizes image to a pixel value for width while keeping original aspect ratio."
           required: false
           type: integer
-
       responses:
         "200":
           description: "Successful response"
