@@ -45,6 +45,7 @@ dependencies {
     compile "io.dropwizard:dropwizard-client:${dropwizardVersion}"
     compile "io.dropwizard:dropwizard-jdbi:${dropwizardVersion}"
     compile ':ojdbc6:'
+    compile "de.thomaskrille:dropwizard-template-config:1.4.0"
 }
 
 codenarc {
@@ -101,7 +102,7 @@ task writeBuildProperties << {
 processResources.dependsOn writeBuildProperties
 
 // https://docs.gradle.org/current/dsl/org.gradle.api.tasks.javadoc.Groovydoc.html
-build.dependsOn shadowJar, groovydoc
+build.dependsOn shadowJar, groovydoc, cloneContribFiles
 
 // FIXME: use ShadowJar (java -jar build/libs/web-api-skeleton-all.jar server configuration.yaml)
 task run(type: JavaExec, dependsOn: build) {
