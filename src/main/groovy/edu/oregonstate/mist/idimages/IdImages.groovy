@@ -1,11 +1,15 @@
 package edu.oregonstate.mist.idimages
 
+import de.thomaskrille.dropwizard_template_config.TemplateConfigBundle
 import edu.oregonstate.mist.api.BuildInfoManager
 import edu.oregonstate.mist.api.Configuration
+import edu.oregonstate.mist.api.PrettyPrintResponseFilter
 import edu.oregonstate.mist.api.Resource
 import edu.oregonstate.mist.api.InfoResource
 import edu.oregonstate.mist.api.AuthenticatedUser
 import edu.oregonstate.mist.api.BasicAuthenticator
+import edu.oregonstate.mist.api.jsonapi.GenericExceptionMapper
+import edu.oregonstate.mist.api.jsonapi.NotFoundExceptionMapper
 import edu.oregonstate.mist.idimages.resources.IdImagesResource
 import io.dropwizard.auth.AuthDynamicFeature
 import io.dropwizard.auth.AuthValueFactoryProvider
@@ -26,7 +30,26 @@ class IdImages extends Application<IdImagesConfiguration> {
      * @param bootstrap
      */
     @Override
-    public void initialize(Bootstrap<Configuration> bootstrap) {}
+    public void initialize(Bootstrap<Configuration> bootstrap) {
+        bootstrap.addBundle(new TemplateConfigBundle())
+    }
+
+    /**
+     * Registers lifecycle managers and Jersey exception mappers
+     * and container response filters
+     *
+     * @param environment
+     * @param buildInfoManager
+     */
+    protected void registerAppManagerLogic(Environment environment,
+                                           BuildInfoManager buildInfoManager) {
+
+        environment.lifecycle().manage(buildInfoManager)
+
+        environment.jersey().register(new NotFoundExceptionMapper())
+        environment.jersey().register(new GenericExceptionMapper())
+        environment.jersey().register(new PrettyPrintResponseFilter())
+    }
 
     /**
      * Parses command-line arguments and runs the application.
@@ -37,9 +60,9 @@ class IdImages extends Application<IdImagesConfiguration> {
     @Override
     public void run(IdImagesConfiguration configuration, Environment environment) {
         Resource.loadProperties()
-
         BuildInfoManager buildInfoManager = new BuildInfoManager()
-        environment.lifecycle().manage(buildInfoManager)
+        //environment.lifecycle().manage(buildInfoManager)
+        registerAppManagerLogic(environment, buildInfoManager)
 
         environment.jersey().register(new InfoResource(buildInfoManager.getInfo()))
         environment.jersey().register(new AuthDynamicFeature(
