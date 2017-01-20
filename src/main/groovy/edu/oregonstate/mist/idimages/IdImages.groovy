@@ -61,7 +61,6 @@ class IdImages extends Application<IdImagesConfiguration> {
     public void run(IdImagesConfiguration configuration, Environment environment) {
         Resource.loadProperties()
         BuildInfoManager buildInfoManager = new BuildInfoManager()
-        //environment.lifecycle().manage(buildInfoManager)
         registerAppManagerLogic(environment, buildInfoManager)
 
         environment.jersey().register(new InfoResource(buildInfoManager.getInfo()))
